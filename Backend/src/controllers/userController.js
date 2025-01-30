@@ -1,7 +1,7 @@
 const { User, validate } = require("../models/userModel");
 const bcrypt = require("bcrypt");
 
-createUser = async (req, res) => {
+createUser = async (req, res, next) => {
   try {
     const { error } = validate(req.body);
     if (error)
@@ -18,8 +18,8 @@ createUser = async (req, res) => {
 
     await new User({ ...req.body, password: hashPassword }).save();
     res.status(201).send({ message: "User created successfully" });
-  } catch (error) {
-    res.status(500).send({ message: "Internal Server Error" });
+  } catch (err) {
+    next(err);
   }
 };
 

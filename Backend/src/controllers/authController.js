@@ -2,7 +2,7 @@ const { User } = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const Joi = require("joi");
 
-const authUser = async (req, res) => {
+const authUser = async (req, res, next) => {
   try {
     const { error } = validate(req.body);
     if (error)
@@ -20,9 +20,9 @@ const authUser = async (req, res) => {
       return res.status(401).send({ message: "Invalid Email or Password" });
 
     const token = user.generateAuthToken();
-    res.status(200).send({ data: token, message: "logged in successfully" });
-  } catch (error) {
-    res.status(500).send({ message: "Internal Server Error" });
+    res.status(200).send({ data: token, message: "Logged in successfully" });
+  } catch (err) {
+    next(err);
   }
 };
 
