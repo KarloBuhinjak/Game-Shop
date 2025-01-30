@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import Button from "react-bootstrap/Button";
 
 const Login = () => {
   const [data, setData] = useState({ email: "", password: "" });
@@ -32,6 +33,10 @@ const Login = () => {
     <div>
       <form onSubmit={handleSubmit}>
         <h1>Login to Your Account</h1>
+        <Button variant="primary" type="submit">
+          Sign In
+        </Button>
+
         <div>
           <input
             type="email"
