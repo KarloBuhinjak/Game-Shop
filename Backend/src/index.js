@@ -9,6 +9,7 @@ const errorMiddleware = require("./middlewares/errorMiddleware");
 const userRouter = require("./routes/userRouter");
 const authRouter = require("./routes/authRouter");
 const gameRouter = require("./routes/gameRouter");
+const cartRouter = require("./routes/cartRouter");
 
 connection();
 
@@ -19,6 +20,7 @@ app.use(loggingMiddleware);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/games", gameRouter);
+app.use("/api/v1/cart", cartRouter);
 
 app.use(errorMiddleware);
 
