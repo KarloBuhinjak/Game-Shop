@@ -1,16 +1,13 @@
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
 import Home from "./pages/Home";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import "bootstrap/dist/css/bootstrap.min.css";
-import Layout from "../layout/Layout";
+import Layout from "./layout/Layout";
 import ProtectedRoute from "./routes/ProtectedRoute";
+import AdminDashboard from "./pages/AdminDashboard";
+import GameDetails from "./pages/GameDetails";
 
 function App() {
   return (
@@ -42,6 +39,14 @@ function App() {
               </Layout>
             }
           />
+          <Route
+            path="/details"
+            element={
+              <Layout>
+                <GameDetails />
+              </Layout>
+            }
+          />
 
           <Route element={<ProtectedRoute adminOnly={false} />}>
             <Route
@@ -57,11 +62,11 @@ function App() {
 
           <Route element={<ProtectedRoute adminOnly={true} />}>
             <Route
-              path="/admin"
+              path="/dashboard"
               exact
               element={
                 <Layout>
-                  <Home />
+                  <AdminDashboard />
                 </Layout>
               }
             />

@@ -7,8 +7,10 @@ const {
   deleteGame,
 } = require("../controllers/gameController");
 const upload = require("../middlewares/uploadMiddleware");
+const authMiddleware = require("../middlewares/authMiddleware")
+const adminMiddleware = require("../middlewares/adminMiddleware")
 
-router.post("/", upload.single("file"), createGame);
+router.post("/", authMiddleware, adminMiddleware, upload.single("file"), createGame);
 router.get("/", getAllGames);
 router.get("/:id", getGameById);
 router.put("/:id", upload.single("file"), updateGame);
