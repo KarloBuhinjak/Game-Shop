@@ -85,11 +85,15 @@ const deleteGame = async (req, res, next) => {
   try {
     const game = await Game.findByIdAndDelete(gameId);
 
+
     if (!game) {
       return res.status(404).json({ error: "Game not found" });
     }
 
-    res.json({ message: "Game deleted successfully" });
+    const games = await Game.find();
+
+
+    res.json({ message: "Game deleted successfully", games: games });
   } catch (err) {
     next(err);
   }

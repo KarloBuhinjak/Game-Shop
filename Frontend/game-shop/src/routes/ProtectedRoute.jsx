@@ -1,17 +1,18 @@
 import { Navigate, Outlet } from "react-router-dom";
+import { useContext } from "react";
+import { AuthenticationContext } from "../context/AuthenticationProvider";
 import { jwtDecode } from "jwt-decode";
 
 const ProtectedRoute = ({ adminOnly }) => {
-  const user = localStorage.getItem("token");
-  let claims = null;
+  const { token } = useContext(AuthenticationContext);
 
-  if (user) {
-    claims = jwtDecode(user);
+  let claims;
+
+  if (token) {
+    claims = jwtDecode(token);
   }
 
-  console.log(claims);
-
-  return claims !== null ? (
+  return token !== null ? (
     adminOnly === true ? (
       claims.isAdmin === true ? (
         <Outlet />

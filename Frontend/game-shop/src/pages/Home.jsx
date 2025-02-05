@@ -1,124 +1,126 @@
-import { useState } from "react";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import Spinner from "react-bootstrap/Spinner";
+import Button from "react-bootstrap/Button";
+import Card from "react-bootstrap/Card";
+import Form from "react-bootstrap/Form";
+import { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    window.location.reload();
-  };
-  const [gameData, setGameData] = useState({
-    gameName: "",
-    price: "",
-    description: "",
-    stock: "",
-    image: null,
-  });
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [games, setGames] = useState([]);
+  const [filteredGames, setFilteredGames] = useState([]);
+  const [searchText, setSearchText] = useState("");
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setGameData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
+  const [loading, setLoading] = useState(false);
 
-  const handleFileChange = (e) => {
-    setGameData((prevData) => ({
-      ...prevData,
-      image: e.target.files[0],
-    }));
-  };
+  const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const formData = new FormData();
-    formData.append("gameName", gameData.gameName);
-    formData.append("price", gameData.price);
-    formData.append("description", gameData.description);
-    formData.append("stock", gameData.stock);
-    formData.append("file", gameData.image);
+  useEffect(() => {
+    const fetchGames = async () => {
+      setLoading(true);
 
-    try {
-      const response = await axios.post(
-        "http://localhost:3000/api/v1/games",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      await axios
+        .get("http://localhost:3000/api/v1/games/")
+        .then((response) => {
+          setGames(response.data);
+        })
+        .catch((error) => {
+          console.error(error);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    };
 
-      setSuccess("Game added successfully!");
-      setGameData({
-        gameName: "",
-        price: "",
-        description: "",
-        stock: "",
-        image: null,
-      });
-    } catch (error) {
-      setError("Error adding the game!");
-      console.error(error);
-    }
-  };
+    fetchGames();
+  }, []);
 
   return (
-    <div>
-      <button onClick={handleLogout}>Logout</button>
-      <h2>Add a New Game</h2>
-      {error && <div style={{ color: "red" }}>{error}</div>}
-      {success && <div style={{ color: "green" }}>{success}</div>}
-      <form onSubmit={handleSubmit}>
-        <div>
-          <input
-            type="text"
-            name="gameName"
-            placeholder="Game Name"
-            value={gameData.gameName}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <input
-            type="number"
-            name="price"
-            placeholder="Price"
-            value={gameData.price}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <textarea
-            name="description"
-            placeholder="Description"
-            value={gameData.description}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <input
-            type="number"
-            name="stock"
-            placeholder="Stock"
-            value={gameData.stock}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <input type="file" name="file" onChange={handleFileChange} required />
-        </div>
-        <div>
-          <button type="submit">Add Game</button>
-        </div>
-      </form>
-    </div>
+    <Container className="py-3">
+      {loading ? (
+        <Spinner animation="border" variant="success" />
+      ) : (
+        <>
+          <Row className="my-3">
+            <Form className="d-flex">
+              <Form.Control
+                type="search"
+                placeholder="Search"
+                className="me-2"
+                aria-label="Search"
+                onChange={(event) => {
+                  setSearchText(event.target.value);
+                  setFilteredGames(
+                    games.filter((game) => {
+                      return game.gameName
+                        .toLowerCase()
+                        .includes(event.target.value.toLowerCase());
+                    })
+                  );
+                }}
+              />
+            </Form>
+          </Row>
+          <Row>
+            {searchText.length > 0 ? (
+              filteredGames.length === 0 ? (
+                <Col>No games found.</Col>
+              ) : (
+                filteredGames.map((game) => {
+                  return (
+                    <Col key={game._id} className="my-2">
+                      <Card
+                        style={{ width: "18rem" }}
+                        onClick={() => {
+                          navigate(`/details`, { state: { id: game._id } });
+                        }}
+                      >
+                        <Card.Img
+                          variant="top"
+                          src={`http://localhost:3000/images/${game.image}`}
+                        />
+                        <Card.Body>
+                          <Card.Title>{game.gameName}</Card.Title>
+                          <Card.Text>{game.price}€</Card.Text>
+                        </Card.Body>
+                      </Card>
+                    </Col>
+                  );
+                })
+              )
+            ) : (
+              games.map((game) => {
+                return (
+                  <Col key={game._id} className="my-2">
+                    <Card
+                      style={{ width: "18rem" }}
+                      onClick={() => {
+                        navigate(`/details`, { state: { id: game._id } });
+                      }}
+                    >
+                      <Card.Img
+                        variant="top"
+                        src={`http://localhost:3000/images/${game.image}`}
+                      />
+                      <Card.Body>
+                        <div className="d-flex justify-content-between">
+                          {" "}
+                          <Card.Title>{game.gameName}</Card.Title>
+                          <Card.Text>{game.price}€</Card.Text>
+                        </div>
+                      </Card.Body>
+                    </Card>
+                  </Col>
+                );
+              })
+            )}
+          </Row>
+        </>
+      )}
+    </Container>
   );
 };
 
