@@ -1,13 +1,15 @@
-import { jwtDecode } from "jwt-decode";
 import { createContext, useState } from "react";
 
 const AuthenticationContext = createContext({
   token: null,
   setToken: () => {},
+  cart: {},
+  updateCart: () => {},
 });
 
 const AuthenticationProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem("token"));
+  const [cart, setCart] = useState({});
 
   const saveToken = (newState) => {
     if (newState) {
@@ -19,8 +21,18 @@ const AuthenticationProvider = ({ children }) => {
     }
   };
 
+  const updateCart = (newState) => {
+    if (newState) {
+      setCart(newState);
+    } else {
+      setCart({});
+    }
+  };
+
   return (
-    <AuthenticationContext.Provider value={{ token, setToken: saveToken }}>{children}</AuthenticationContext.Provider>
+    <AuthenticationContext.Provider value={{ token, setToken: saveToken, cart, updateCart }}>
+      {children}
+    </AuthenticationContext.Provider>
   );
 };
 

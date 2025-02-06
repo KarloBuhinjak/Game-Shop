@@ -2,7 +2,6 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Spinner from "react-bootstrap/Spinner";
-import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
 import { useEffect, useState } from "react";
@@ -55,9 +54,7 @@ const Home = () => {
                   setSearchText(event.target.value);
                   setFilteredGames(
                     games.filter((game) => {
-                      return game.gameName
-                        .toLowerCase()
-                        .includes(event.target.value.toLowerCase());
+                      return game.gameName.toLowerCase().includes(event.target.value.toLowerCase());
                     })
                   );
                 }}
@@ -78,13 +75,12 @@ const Home = () => {
                           navigate(`/details`, { state: { id: game._id } });
                         }}
                       >
-                        <Card.Img
-                          variant="top"
-                          src={`http://localhost:3000/images/${game.image}`}
-                        />
+                        <Card.Img variant="top" src={`http://localhost:3000/images/${game.image}`} />
                         <Card.Body>
-                          <Card.Title>{game.gameName}</Card.Title>
-                          <Card.Text>{game.price}€</Card.Text>
+                          <div className="d-flex justify-content-between">
+                            <Card.Title>{game.gameName}</Card.Title>
+                            <Card.Text>{game.price}€</Card.Text>
+                          </div>
                         </Card.Body>
                       </Card>
                     </Col>
@@ -101,13 +97,9 @@ const Home = () => {
                         navigate(`/details`, { state: { id: game._id } });
                       }}
                     >
-                      <Card.Img
-                        variant="top"
-                        src={`http://localhost:3000/images/${game.image}`}
-                      />
+                      <Card.Img variant="top" src={`http://localhost:3000/images/${game.image}`} />
                       <Card.Body>
                         <div className="d-flex justify-content-between">
-                          {" "}
                           <Card.Title>{game.gameName}</Card.Title>
                           <Card.Text>{game.price}€</Card.Text>
                         </div>

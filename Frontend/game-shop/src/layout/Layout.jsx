@@ -1,15 +1,18 @@
 import { jwtDecode } from "jwt-decode";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthenticationContext } from "../context/AuthenticationProvider";
+import Badge from "react-bootstrap/Badge";
+import axios from "axios";
 
 const Layout = ({ children }) => {
   const navigate = useNavigate();
 
   const { token, setToken } = useContext(AuthenticationContext);
+  const { cart, updateCart } = useContext(AuthenticationContext);
 
   let claims;
 
@@ -21,6 +24,23 @@ const Layout = ({ children }) => {
     setToken(null);
     navigate("/");
   };
+
+  useEffect(() => {
+    const fetchCart = async () => {
+      if (token) {
+        await axios
+          .get("http://localhost:3000/api/v1/cart", { headers: { Authorization: `Bearer ${token}` } })
+          .then((response) => {
+            updateCart(response.data);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
+    };
+
+    fetchCart();
+  }, []);
 
   return (
     <>
@@ -43,6 +63,18 @@ const Layout = ({ children }) => {
                   </Link>
                 </Nav.Link>
               )}
+              {!claims.isAdmin && (
+                <Nav.Link eventKey={3} style={{ position: "relative", marginRight: "15px" }}>
+                  <Link to={"/cart"} style={{ textDecoration: "none", position: "relative" }}>
+                    Cart
+                    <Badge bg="success" style={{ position: "absolute", top: "-10px", right: "-25px" }} pill>
+                      {cart.items && cart.items.length > 0
+                        ? cart.items.reduce((acc, item) => acc + item.quantity, 0)
+                        : undefined}
+                    </Badge>
+                  </Link>
+                </Nav.Link>
+              )}
               <Nav.Link eventKey={2}>
                 <Link to={"/"} style={{ textDecoration: "none" }} onClick={handleLogout}>
                   Logout
@@ -51,7 +83,7 @@ const Layout = ({ children }) => {
             </Nav>
           ) : (
             <Nav>
-              <Nav.Link eventKey={1}>
+              <Nav.Link eventKey={1} style={{ marginRight: "15px" }}>
                 <Link to={"/login"} style={{ textDecoration: "none" }}>
                   Login
                 </Link>
