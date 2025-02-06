@@ -11,6 +11,7 @@ const userRouter = require("./routes/userRouter");
 const authRouter = require("./routes/authRouter");
 const gameRouter = require("./routes/gameRouter");
 const cartRouter = require("./routes/cartRouter");
+const orderRouter = require("./routes/orderRouter");
 
 connection();
 
@@ -23,6 +24,7 @@ app.use("/api/v1/users", userRouter);
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/games", gameRouter);
 app.use("/api/v1/cart", cartRouter);
+app.use("/api/v1/orders", orderRouter);
 
 app.use(errorMiddleware);
 

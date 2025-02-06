@@ -26,7 +26,12 @@ const createGame = async (req, res, next) => {
 const getAllGames = async (req, res, next) => {
   try {
     const games = await Game.find();
-    res.json(games);
+
+    if (!games.length) {
+      return res.status(404).json({ message: "No games found" });
+    }
+
+    res.status(200).json(games);
   } catch (err) {
     next(err);
   }
@@ -85,13 +90,11 @@ const deleteGame = async (req, res, next) => {
   try {
     const game = await Game.findByIdAndDelete(gameId);
 
-
     if (!game) {
       return res.status(404).json({ error: "Game not found" });
     }
 
     const games = await Game.find();
-
 
     res.json({ message: "Game deleted successfully", games: games });
   } catch (err) {

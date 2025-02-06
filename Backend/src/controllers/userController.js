@@ -23,6 +23,36 @@ createUser = async (req, res, next) => {
   }
 };
 
+const getAllUsers = async (req, res, next) => {
+  try {
+    const users = await User.find();
+
+    if (!users.length) {
+      return res.status(404).json({ message: "No users found" });
+    }
+
+    res.status(200).json(users);
+  } catch (err) {
+    next(err);
+  }
+};
+
+const getUserById = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json(user);
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   createUser,
+  getAllUsers,
+  getUserById,
 };
