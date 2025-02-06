@@ -8,6 +8,7 @@ import Layout from "./layout/Layout";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import AdminDashboard from "./pages/AdminDashboard";
 import GameDetails from "./pages/GameDetails";
+import Cart from "./pages/Cart";
 
 function App() {
   return (
@@ -50,11 +51,11 @@ function App() {
 
           <Route element={<ProtectedRoute adminOnly={false} />}>
             <Route
-              path="/protected"
+              path="/cart"
               exact
               element={
                 <Layout>
-                  <Home />
+                  <Cart />
                 </Layout>
               }
             />

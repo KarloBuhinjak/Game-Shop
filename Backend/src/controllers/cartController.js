@@ -2,9 +2,7 @@ const Cart = require("../models/cartModel");
 
 const getCart = async (req, res, next) => {
   try {
-    const cart = await Cart.findOne({ userId: req.user._id }).populate(
-      "items.gameId"
-    );
+    const cart = await Cart.findOne({ userId: req.user._id }).populate("items.gameId");
     if (!cart) return res.status(404).json({ message: "Cart is empty" });
 
     res.json(cart);
@@ -23,9 +21,7 @@ const addToCart = async (req, res, next) => {
       cart = new Cart({ userId: req.user._id, items: [] });
     }
 
-    const itemIndex = cart.items.findIndex(
-      (item) => item.gameId.toString() === gameId
-    );
+    const itemIndex = cart.items.findIndex((item) => item.gameId.toString() === gameId);
 
     if (itemIndex > -1) {
       cart.items[itemIndex].quantity += quantity;

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
 
 import Container from "react-bootstrap/Container";
@@ -22,21 +22,64 @@ const AdminDashboard = () => {
   const [selectedKey, setSelectedKey] = useState("games");
   const [show, setShow] = useState(false);
 
-  const handleClose = () => setShow(false);
+  const [formData, setFormData] = useState({
+    gameName: "",
+    price: "",
+    description: "",
+    stock: "",
+    file: null,
+  });
+
+  const [updatingGameId, setUpdatingGameId] = useState(null);
+
+  const fileInputRef = useRef(null);
+
+  const handleClose = () => {
+    setShow(false);
+    setFormData({
+      gameName: "",
+      price: "",
+      description: "",
+      stock: "",
+      file: null,
+    });
+    // Reset file input field
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
   const handleShow = () => setShow(true);
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const requestBody = {
-      gameName: event.target[0].value,
-      price: event.target[1].value,
-      description: event.target[2].value,
-      stock: event.target[3].value,
-      file: event.target[4].files[0],
-    };
+  const handleOnChange = (event) => {
+    const { name, value, files } = event.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: files ? files[0] : value,
+    }));
+  };
 
-    console.log(event.target[4]);
-    console.log(requestBody);
+  const handleUpdate = async (game) => {
+    setUpdatingGameId(game._id);
+    setFormData({
+      gameName: game.gameName,
+      price: game.price,
+      description: game.description,
+      stock: game.stock,
+      file: null,
+    });
+    handleShow();
+  };
+
+  const handleSubmitCreate = async (event) => {
+    event.preventDefault();
+
+    const requestBody = {
+      gameName: formData.gameName,
+      price: formData.price,
+      description: formData.description,
+      stock: formData.stock,
+      file: formData.file,
+    };
 
     await axios
       .post("http://localhost:3000/api/v1/games", requestBody, {
@@ -48,11 +91,65 @@ const AdminDashboard = () => {
       .then((response) => {
         setSelectedKey("games");
         setError(null);
-        event.target[0].value = null;
-        event.target[1].value = null;
-        event.target[2].value = null;
-        event.target[3].value = null;
-        event.target[4].value = "";
+        setFormData({
+          gameName: "",
+          price: "",
+          description: "",
+          stock: "",
+          file: null,
+        });
+
+        // Reset file input field
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
+        }
+
+        setGames(response.data.games);
+      })
+      .catch((errors) => {
+        setError(errors.response.data.error);
+      })
+      .finally(() => {});
+  };
+
+  const handleSubmitUpdate = async (event) => {
+    event.preventDefault();
+
+    const requestBody = {
+      gameName: formData.gameName,
+      price: formData.price,
+      description: formData.description,
+      stock: formData.stock,
+      file: formData.file,
+    };
+
+    await axios
+      .put("http://localhost:3000/api/v1/games/" + updatingGameId, requestBody, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        setSelectedKey("games");
+        setError(null);
+        setFormData({
+          gameName: "",
+          price: "",
+          description: "",
+          stock: "",
+          file: null,
+        });
+        setUpdatingGameId(null);
+
+        // Reset file input field
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
+        }
+
+        setGames(response.data.games);
+
+        handleClose();
       })
       .catch((errors) => {
         setError(errors.response.data.error);
@@ -66,7 +163,9 @@ const AdminDashboard = () => {
       .then((response) => {
         setGames(response.data.games);
       })
-      .catch((errors) => {})
+      .catch((errors) => {
+        console.log(errors);
+      })
       .finally(() => {});
   };
 
@@ -79,14 +178,16 @@ const AdminDashboard = () => {
         .then((response) => {
           setGames(response.data);
         })
-        .catch((error) => {})
+        .catch((error) => {
+          console.log(error);
+        })
         .finally(() => {
           setLoading(false);
         });
     };
 
     fetchGames();
-  }, [selectedKey]);
+  }, []);
 
   return (
     <Container className="mt-5">
@@ -138,7 +239,7 @@ const AdminDashboard = () => {
                             <Button
                               variant="outline-success"
                               onClick={() => {
-                                handleShow();
+                                handleUpdate(game);
                               }}
                             >
                               Update
@@ -164,31 +265,58 @@ const AdminDashboard = () => {
         <Tab eventKey="new" title="Add new">
           <Container className="my-5 d-flex justify-content-center">
             <Col xs={6}>
-              <Form onSubmit={handleSubmit}>
+              <Form onSubmit={handleSubmitCreate}>
                 <Row>
                   <Col>
                     <Form.Group className="mb-3" controlId="formBasic1">
                       <Form.Label>Name</Form.Label>
-                      <Form.Control type="text" placeholder="Enter name" />
+                      <Form.Control
+                        type="text"
+                        placeholder="Enter name"
+                        name="gameName"
+                        value={formData.gameName}
+                        onChange={handleOnChange}
+                      />
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="formBasic2">
                       <Form.Label>Price</Form.Label>
-                      <Form.Control type="number" placeholder="Enter price" />
+                      <Form.Control
+                        type="number"
+                        placeholder="Enter price"
+                        name="price"
+                        value={formData.price}
+                        onChange={handleOnChange}
+                      />
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="formBasic3">
                       <Form.Label>Description</Form.Label>
                       <Form.Control
                         as="textarea"
                         placeholder="Enter description"
+                        name="description"
+                        value={formData.description}
+                        onChange={handleOnChange}
                       />
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="formBasic4">
                       <Form.Label>Stock</Form.Label>
-                      <Form.Control type="number" placeholder="Enter stock" />
+                      <Form.Control
+                        type="number"
+                        placeholder="Enter stock"
+                        name="stock"
+                        value={formData.stock}
+                        onChange={handleOnChange}
+                      />
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="formBasic4">
                       <Form.Label>Upload image</Form.Label>
-                      <Form.Control type="file" placeholder="Upload image" />
+                      <Form.Control
+                        type="file"
+                        placeholder="Upload image"
+                        name="file"
+                        onChange={handleOnChange}
+                        ref={fileInputRef}
+                      />
                     </Form.Group>
                   </Col>
                 </Row>
@@ -212,38 +340,63 @@ const AdminDashboard = () => {
         <Tab eventKey="orders" title="Orders"></Tab>
         <Tab eventKey="users" title="Users"></Tab>
       </Tabs>
-      <Modal
-        show={show}
-        onHide={handleClose}
-        backdrop="static"
-        keyboard={false}
-      >
+      <Modal show={show} onHide={handleClose} backdrop="static" keyboard={false}>
         <Modal.Header closeButton>
-          <Modal.Title>Modal title</Modal.Title>
+          <Modal.Title>Update selected game</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form onSubmit={handleSubmit}>
+          <Form onSubmit={handleSubmitUpdate} id="updateForm">
             <Row>
               <Col>
                 <Form.Group className="mb-3" controlId="formBasic1">
                   <Form.Label>Name</Form.Label>
-                  <Form.Control type="text" placeholder="Enter name" />
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter name"
+                    name="gameName"
+                    value={formData.gameName}
+                    onChange={handleOnChange}
+                  />
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="formBasic2">
                   <Form.Label>Price</Form.Label>
-                  <Form.Control type="number" placeholder="Enter price" />
+                  <Form.Control
+                    type="number"
+                    placeholder="Enter price"
+                    name="price"
+                    value={formData.price}
+                    onChange={handleOnChange}
+                  />
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="formBasic3">
                   <Form.Label>Description</Form.Label>
-                  <Form.Control as="textarea" placeholder="Enter description" />
+                  <Form.Control
+                    as="textarea"
+                    placeholder="Enter description"
+                    name="description"
+                    value={formData.description}
+                    onChange={handleOnChange}
+                  />
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="formBasic4">
                   <Form.Label>Stock</Form.Label>
-                  <Form.Control type="number" placeholder="Enter stock" />
+                  <Form.Control
+                    type="number"
+                    placeholder="Enter stock"
+                    name="stock"
+                    value={formData.stock}
+                    onChange={handleOnChange}
+                  />
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="formBasic4">
                   <Form.Label>Upload image</Form.Label>
-                  <Form.Control type="file" placeholder="Upload image" />
+                  <Form.Control
+                    type="file"
+                    placeholder="Upload image"
+                    name="file"
+                    onChange={handleOnChange}
+                    ref={fileInputRef}
+                  />
                 </Form.Group>
               </Col>
             </Row>
@@ -261,7 +414,9 @@ const AdminDashboard = () => {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary">Update</Button>
+          <Button variant="primary" type="submit" form="updateForm">
+            Update
+          </Button>
         </Modal.Footer>
       </Modal>
     </Container>
