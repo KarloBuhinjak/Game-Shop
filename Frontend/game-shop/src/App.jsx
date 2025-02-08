@@ -11,6 +11,7 @@ import GameDetails from "./pages/GameDetails";
 import Cart from "./pages/Cart";
 import Payment from "./pages/Payment";
 import { ToastContainer, toast } from "react-toastify";
+import Profile from "./pages/Profile";
 
 function App() {
   return (
@@ -68,6 +69,15 @@ function App() {
               element={
                 <Layout>
                   <Payment />
+                </Layout>
+              }
+            ></Route>
+            <Route
+              path="/profile"
+              exact
+              element={
+                <Layout>
+                  <Profile />
                 </Layout>
               }
             ></Route>
