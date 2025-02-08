@@ -17,7 +17,9 @@ const createGame = async (req, res, next) => {
       image: filename,
     });
 
-    res.status(201).json(game);
+    const games = await Game.find();
+
+    res.status(201).json({ game: game, games: games });
   } catch (err) {
     next(err);
   }
@@ -26,7 +28,12 @@ const createGame = async (req, res, next) => {
 const getAllGames = async (req, res, next) => {
   try {
     const games = await Game.find();
-    res.json(games);
+
+    if (!games.length) {
+      return res.status(404).json({ message: "No games found" });
+    }
+
+    res.status(200).json(games);
   } catch (err) {
     next(err);
   }
@@ -73,7 +80,9 @@ const updateGame = async (req, res, next) => {
       return res.status(404).json({ error: "Game not found" });
     }
 
-    res.json(game);
+    const games = await Game.find();
+
+    res.json({ game: game, games: games });
   } catch (err) {
     next(err);
   }
@@ -89,7 +98,9 @@ const deleteGame = async (req, res, next) => {
       return res.status(404).json({ error: "Game not found" });
     }
 
-    res.json({ message: "Game deleted successfully" });
+    const games = await Game.find();
+
+    res.json({ message: "Game deleted successfully", games: games });
   } catch (err) {
     next(err);
   }

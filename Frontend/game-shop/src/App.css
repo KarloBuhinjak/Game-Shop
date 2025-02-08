@@ -1,0 +1,28 @@
+.card {
+  transition: all 0.1s;
+  cursor: pointer;
+  user-select: none;
+}
+
+.card:hover {
+  transform: scale(1.02);
+}
+
+.card-img-top {
+  min-width: 100% !important;
+  max-width: 100% !important;
+  min-height: 25vh !important;
+  max-height: 25vh !important;
+}
+
+.card {
+  max-width: 100% !important;
+  min-width: 100% !important;
+}
+
+.details-image {
+  min-width: 100% !important;
+  max-width: 100% !important;
+  min-height: 75vh !important;
+  max-height: 75vh !important;
+}
