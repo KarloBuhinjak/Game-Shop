@@ -16,7 +16,9 @@ const Cart = () => {
     setLoading(true);
 
     await axios
-      .delete("http://localhost:3000/api/v1/cart", { headers: { Authorization: `Bearer ${token}` } })
+      .delete("http://localhost:3000/api/v1/cart", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
       .then(() => {
         updateCart({});
       })
@@ -32,10 +34,14 @@ const Cart = () => {
     setLoading(true);
 
     await axios
-      .delete(`http://localhost:3000/api/v1/cart/${gameId}`, { headers: { Authorization: `Bearer ${token}` } })
+      .delete(`http://localhost:3000/api/v1/cart/${gameId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
       .then(async (response) => {
         await axios
-          .get("http://localhost:3000/api/v1/cart", { headers: { Authorization: `Bearer ${token}` } })
+          .get("http://localhost:3000/api/v1/cart", {
+            headers: { Authorization: `Bearer ${token}` },
+          })
           .then((response) => {
             if (response.data.items.length === 0) {
               updateCart({});
@@ -130,15 +136,24 @@ const Cart = () => {
             </tbody>
           </Table>
           {cart.items && cart.items.length > 0 ? (
-            <>
-              <hr style={{ marginTop: 100 }} />
-              <h1>
-                Total: {cart.items ? cart.items.reduce((acc, item) => acc + item.gameId.price * item.quantity, 0) : 0}€
-              </h1>
+            <Row className="my-5">
+              <h3>
+                Total:{" "}
+                {cart.items
+                  ? cart.items.reduce(
+                      (acc, item) => acc + item.gameId.price * item.quantity,
+                      0
+                    )
+                  : 0}
+                €
+              </h3>
+              <hr className="mt-3" />
               <Row className="my-3">
-                <Button>Checkout</Button>
+                <Button>
+                  <h5>Checkout</h5>
+                </Button>
               </Row>
-            </>
+            </Row>
           ) : (
             <></>
           )}

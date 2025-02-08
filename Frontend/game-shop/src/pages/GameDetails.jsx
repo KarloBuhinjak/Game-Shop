@@ -167,7 +167,7 @@ const GameDetails = () => {
                 }}
                 disabled={isAdding}
               >
-                <h3>Add to cart</h3>
+                <h5>Add to cart</h5>
               </Button>
             </Row>
           )}

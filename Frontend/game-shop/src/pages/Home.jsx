@@ -7,6 +7,7 @@ import Form from "react-bootstrap/Form";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Carousel from "react-bootstrap/Carousel";
 
 const Home = () => {
   const [games, setGames] = useState([]);
@@ -38,11 +39,29 @@ const Home = () => {
   }, []);
 
   return (
-    <Container className="py-3">
+    <Container className="">
       {loading ? (
         <Spinner animation="border" variant="success" />
       ) : (
         <>
+          <Row>
+            <Carousel fade>
+              {games.slice(0, 3).map((game) => {
+                return (
+                  <Carousel.Item>
+                    <img
+                      src={`http://localhost:3000/images/${game.image}`}
+                      className="carousel-image"
+                    ></img>
+                    <Carousel.Caption>
+                      <h3>{game.gameName}</h3>
+                      <p>Best game of the month!</p>
+                    </Carousel.Caption>
+                  </Carousel.Item>
+                );
+              })}
+            </Carousel>
+          </Row>
           <Row className="my-3">
             <Form className="d-flex">
               <Form.Control
