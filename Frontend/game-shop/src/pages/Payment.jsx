@@ -60,8 +60,6 @@ const Payment = () => {
       ),
     };
 
-    console.log(requestBody);
-
     await axios
       .post("http://localhost:3000/api/v1/orders", requestBody, {
         headers: {

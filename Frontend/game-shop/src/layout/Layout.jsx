@@ -6,7 +6,6 @@ import Navbar from "react-bootstrap/Navbar";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthenticationContext } from "../context/AuthenticationProvider";
 import Badge from "react-bootstrap/Badge";
-import axios from "axios";
 
 const Layout = ({ children }) => {
   const navigate = useNavigate();
@@ -25,26 +24,6 @@ const Layout = ({ children }) => {
     setToken(null);
     navigate("/");
   };
-
-  useEffect(() => {
-    const fetchCart = async () => {
-      if (token) {
-        await axios
-          .get("http://localhost:3000/api/v1/cart", {
-            headers: { Authorization: `Bearer ${token}` },
-          })
-          .then((response) => {
-            console.log(response.data);
-            updateCart(response.data);
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-      }
-    };
-
-    fetchCart();
-  }, []);
 
   return (
     <>

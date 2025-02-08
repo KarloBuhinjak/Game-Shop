@@ -13,7 +13,7 @@ const Login = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const { setToken } = useContext(AuthenticationContext);
+  const { setToken, updateCart } = useContext(AuthenticationContext);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -24,10 +24,24 @@ const Login = () => {
 
     await axios
       .post("http://localhost:3000/api/v1/auth/", requestBody)
-      .then((response) => {
-        console.log(response);
+      .then(async (response) => {
         setToken(response.data.data);
-        navigate("/");
+        if (response.data.data) {
+          await axios
+            .get("http://localhost:3000/api/v1/cart", {
+              headers: { Authorization: `Bearer ${response.data.data}` },
+            })
+            .then((response) => {
+              updateCart(response.data);
+              navigate("/");
+            })
+            .catch((error) => {
+              if (error.response.status === 404) {
+                //cart not foud, redirect to homepage
+                navigate("/");
+              }
+            });
+        }
       })
       .catch((error) => {
         setError(error.response.data.message);
@@ -47,7 +61,9 @@ const Login = () => {
               <Form.Group className="mb-3" controlId="formBasicEmail">
                 <Form.Label>Email address</Form.Label>
                 <Form.Control type="email" placeholder="Enter email" />
-                <Form.Text className="text-muted">We'll never share your email with anyone else.</Form.Text>
+                <Form.Text className="text-muted">
+                  We'll never share your email with anyone else.
+                </Form.Text>
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="formBasicPassword">
@@ -60,7 +76,11 @@ const Login = () => {
             <p>
               You don't have an account yet?{" "}
               <span
-                style={{ cursor: "pointer", color: "blue", textDecoration: "underline" }}
+                style={{
+                  cursor: "pointer",
+                  color: "blue",
+                  textDecoration: "underline",
+                }}
                 onClick={() => {
                   navigate("/register");
                 }}
