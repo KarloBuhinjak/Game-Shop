@@ -21,6 +21,7 @@ const Layout = ({ children }) => {
   }
 
   const handleLogout = () => {
+    updateCart({});
     setToken(null);
     navigate("/");
   };
