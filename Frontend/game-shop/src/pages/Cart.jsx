@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthenticationContext } from "../context/AuthenticationProvider";
 import Container from "react-bootstrap/Container";
 import Table from "react-bootstrap/Table";
@@ -62,6 +62,25 @@ const Cart = () => {
         setLoading(false);
       });
   };
+
+  useEffect(() => {
+    const fetchCart = async () => {
+      if (token) {
+        await axios
+          .get("http://localhost:3000/api/v1/cart", {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+          .then((response) => {
+            updateCart(response.data);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
+    };
+
+    fetchCart();
+  }, []);
 
   return (
     <Container className="mt-5">
