@@ -1,38 +1,74 @@
-const { sendEmail } = require("../config/mail");
+const Order = require("../models/orderModel");
+const Game = require("../models/gameModel");
 
-createOrder = (req, res, next) => {
-  const { name, email, subject, message } = req.body;
+createOrder = async (req, res, next) => {
+  try {
+    const { items, totalPrice } = req.body;
+    const customerId = req.user._id;
+    console.log(req.user._id);
 
-  if (
-    !email ||
-    !email.trim() ||
-    !name ||
-    !name.trim() ||
-    !subject ||
-    !subject.trim() ||
-    !message ||
-    !message.trim()
-  ) {
-    return res
-      .status(400)
-      .json({ message: "name, email, subject and message are required" });
-  }
+    const order = new Order({ customerId, items, totalPrice });
+    await order.save();
 
-  const receipients = email;
-
-  sendEmail({ receipients, subject, message })
-    .then((result) => {
-      console.log("Email sent successfully:", result);
-      return res.json({ message: "Email sent successfully!" });
-    })
-    .catch((error) => {
-      console.error("Error sending email:", error);
-      if (!res.headersSent) {
-        return res.status(500).json({ message: "Failed to send email", error });
+    for (let item of items) {
+      const game = await Game.findById(item.gameId);
+      if (!game) {
+        throw new Error(`Game with ID ${item.gameId} not found`);
       }
-    });
+
+      if (game.stock < item.quantity) {
+        throw new Error(`Not enough stock for ${game.gameName}`);
+      }
+
+      game.stock -= item.quantity;
+      await game.save();
+    }
+
+    res.status(201).json({ message: "Order created successfully", order });
+  } catch (err) {
+    next(err);
+  }
+};
+
+getAllOrders = async (req, res, next) => {
+  try {
+    const orders = await Order.find()
+      .populate("items.gameId", "gameName price")
+      .exec();
+
+    res.status(200).json(orders);
+  } catch (err) {
+    next(err);
+  }
+};
+
+getOrdersByUser = async (req, res, next) => {
+  try {
+    const orders = await Order.find({ customerId: req.user._id })
+      .populate("items.gameId", "gameName price")
+      .exec();
+    res.status(200).json(orders);
+  } catch (err) {
+    next(err);
+  }
+};
+
+getOrderById = async (req, res, next) => {
+  try {
+    const order = await Order.findOne({ _id: req.params.id })
+      .populate("items.gameId", "gameName price")
+      .exec();
+    if (!order) return res.status(404).json({ message: "Order not found" });
+
+    res.status(200).json(order);
+  } catch (err) {
+    next(err);
+  }
 };
 
 module.exports = {
   createOrder,
+  getAllOrders,
+  getOrdersByUser,
+  getOrderById,
 };
