@@ -70,7 +70,7 @@ const Home = () => {
               ) : (
                 filteredGames.map((game) => {
                   return (
-                    <Col key={game._id} className="my-2">
+                    <Col key={game._id} className="my-2" sm={4}>
                       <Card
                         style={{}}
                         onClick={() => {
@@ -96,7 +96,7 @@ const Home = () => {
             ) : (
               games.map((game) => {
                 return (
-                  <Col key={game._id} className="my-2">
+                  <Col key={game._id} className="my-2" sm={4}>
                     <Card
                       style={{}}
                       onClick={() => {

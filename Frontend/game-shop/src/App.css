@@ -11,13 +11,13 @@
 .card-img-top {
   min-width: 100% !important;
   max-width: 100% !important;
-  min-height: 230px !important;
-  max-height: 230px !important;
+  min-height: 25vh !important;
+  max-height: 25vh !important;
 }
 
 .card {
-  max-width: 410px !important;
-  min-width: 410px !important;
+  max-width: 100% !important;
+  min-width: 100% !important;
 }
 
 .details-image {
