@@ -6,6 +6,7 @@ import Navbar from "react-bootstrap/Navbar";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthenticationContext } from "../context/AuthenticationProvider";
 import Badge from "react-bootstrap/Badge";
+import { ToastContainer, toast } from "react-toastify";
 
 const Layout = ({ children }) => {
   const navigate = useNavigate();
@@ -20,6 +21,16 @@ const Layout = ({ children }) => {
   }
 
   const handleLogout = () => {
+    toast.success("Logged out.", {
+      position: "top-center",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: false,
+      draggable: false,
+      progress: undefined,
+      theme: "light",
+    });
     updateCart({});
     setToken(null);
     navigate("/");

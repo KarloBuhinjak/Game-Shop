@@ -10,11 +10,13 @@ import AdminDashboard from "./pages/AdminDashboard";
 import GameDetails from "./pages/GameDetails";
 import Cart from "./pages/Cart";
 import Payment from "./pages/Payment";
+import { ToastContainer, toast } from "react-toastify";
 
 function App() {
   return (
     <>
       <Router>
+        <ToastContainer />
         <Routes>
           <Route
             path="/"

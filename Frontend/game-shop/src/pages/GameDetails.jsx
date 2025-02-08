@@ -8,6 +8,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { AuthenticationContext } from "../context/AuthenticationProvider";
 import { jwtDecode } from "jwt-decode";
+import { ToastContainer, toast } from "react-toastify";
 
 const GameDetails = () => {
   const { token } = useContext(AuthenticationContext);
@@ -45,6 +46,16 @@ const GameDetails = () => {
       })
       .then((response) => {
         updateCart(response.data);
+        toast.success("Item added to cart.", {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: false,
+          draggable: false,
+          progress: undefined,
+          theme: "light",
+        });
       })
       .catch((error) => {
         console.error(error);

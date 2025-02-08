@@ -8,6 +8,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
+import { ToastContainer, toast } from "react-toastify";
 
 const Login = () => {
   const [error, setError] = useState("");
@@ -34,9 +35,29 @@ const Login = () => {
             .then((response) => {
               updateCart(response.data);
               navigate("/");
+              toast.success("Logged in.", {
+                position: "top-center",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: false,
+                pauseOnHover: false,
+                draggable: false,
+                progress: undefined,
+                theme: "light",
+              });
             })
             .catch((error) => {
               if (error.response.status === 404) {
+                toast.success("Logged in.", {
+                  position: "top-center",
+                  autoClose: 2000,
+                  hideProgressBar: false,
+                  closeOnClick: false,
+                  pauseOnHover: false,
+                  draggable: false,
+                  progress: undefined,
+                  theme: "light",
+                });
                 //cart not foud, redirect to homepage
                 navigate("/");
               }
