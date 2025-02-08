@@ -29,8 +29,11 @@ const Layout = ({ children }) => {
     const fetchCart = async () => {
       if (token) {
         await axios
-          .get("http://localhost:3000/api/v1/cart", { headers: { Authorization: `Bearer ${token}` } })
+          .get("http://localhost:3000/api/v1/cart", {
+            headers: { Authorization: `Bearer ${token}` },
+          })
           .then((response) => {
+            console.log(response.data);
             updateCart(response.data);
           })
           .catch((error) => {
@@ -64,19 +67,40 @@ const Layout = ({ children }) => {
                 </Nav.Link>
               )}
               {!claims.isAdmin && (
-                <Nav.Link eventKey={3} style={{ position: "relative", marginRight: "15px" }}>
-                  <Link to={"/cart"} style={{ textDecoration: "none", position: "relative" }}>
+                <Nav.Link
+                  eventKey={3}
+                  style={{ position: "relative", marginRight: "15px" }}
+                >
+                  <Link
+                    to={"/cart"}
+                    style={{ textDecoration: "none", position: "relative" }}
+                  >
                     Cart
-                    <Badge bg="success" style={{ position: "absolute", top: "-10px", right: "-25px" }} pill>
+                    <Badge
+                      bg="success"
+                      style={{
+                        position: "absolute",
+                        top: "-10px",
+                        right: "-25px",
+                      }}
+                      pill
+                    >
                       {cart.items && cart.items.length > 0
-                        ? cart.items.reduce((acc, item) => acc + item.quantity, 0)
+                        ? cart.items.reduce(
+                            (acc, item) => acc + item.quantity,
+                            0
+                          )
                         : undefined}
                     </Badge>
                   </Link>
                 </Nav.Link>
               )}
               <Nav.Link eventKey={2}>
-                <Link to={"/"} style={{ textDecoration: "none" }} onClick={handleLogout}>
+                <Link
+                  to={"/"}
+                  style={{ textDecoration: "none" }}
+                  onClick={handleLogout}
+                >
                   Logout
                 </Link>
               </Nav.Link>

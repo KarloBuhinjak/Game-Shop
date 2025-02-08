@@ -7,3 +7,22 @@
 .card:hover {
   transform: scale(1.02);
 }
+
+.card-img-top {
+  min-width: 100% !important;
+  max-width: 100% !important;
+  min-height: 230px !important;
+  max-height: 230px !important;
+}
+
+.card {
+  max-width: 410px !important;
+  min-width: 410px !important;
+}
+
+.details-image {
+  min-width: 100% !important;
+  max-width: 100% !important;
+  min-height: 75vh !important;
+  max-height: 75vh !important;
+}
