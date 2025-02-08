@@ -28,7 +28,12 @@ const createGame = async (req, res, next) => {
 const getAllGames = async (req, res, next) => {
   try {
     const games = await Game.find();
-    res.json(games);
+
+    if (!games.length) {
+      return res.status(404).json({ message: "No games found" });
+    }
+
+    res.status(200).json(games);
   } catch (err) {
     next(err);
   }
