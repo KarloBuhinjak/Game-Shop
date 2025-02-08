@@ -18,9 +18,24 @@ const AdminDashboard = () => {
   const { token } = useContext(AuthenticationContext);
   const [error, setError] = useState("");
   const [games, setGames] = useState([]);
+  const [orders, setOrders] = useState([]);
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedKey, setSelectedKey] = useState("games");
   const [show, setShow] = useState(false);
+
+  const [showDetails, setShowDetails] = useState(false);
+  const [orderDetails, setOrderDetails] = useState(null);
+
+  const handleShowDetails = (order) => {
+    setOrderDetails(order);
+    setShowDetails(true);
+  };
+
+  const handleCloseDetails = () => {
+    setShowDetails(false);
+    setOrderDetails(null);
+  };
 
   const [formData, setFormData] = useState({
     gameName: "",
@@ -198,6 +213,22 @@ const AdminDashboard = () => {
           },
         })
         .then(async (response) => {
+          setOrders(response.data);
+          console.log(response.data);
+        })
+        .catch((error) => {})
+        .finally(() => {});
+    };
+
+    const fetchUsers = async () => {
+      await axios
+        .get("http://localhost:3000/api/v1/users", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then(async (response) => {
+          setUsers(response.data);
           console.log(response.data);
         })
         .catch((error) => {})
@@ -206,6 +237,7 @@ const AdminDashboard = () => {
 
     fetchGames();
     fetchOrders();
+    fetchUsers();
   }, []);
 
   return (
@@ -356,8 +388,144 @@ const AdminDashboard = () => {
             </Col>
           </Container>
         </Tab>
-        <Tab eventKey="orders" title="Orders"></Tab>
-        <Tab eventKey="users" title="Users"></Tab>
+        <Tab eventKey="orders" title="Orders">
+          <Container className="mt-5">
+            {loading ? (
+              <Spinner animation="border" variant="success" />
+            ) : (
+              <Table>
+                <thead>
+                  <tr>
+                    <th>Order ID</th>
+                    <th>Created at</th>
+                    <th>Customer name</th>
+                    <th>Total price</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {orders.map((order) => (
+                    <tr key={order.orderId}>
+                      <td>{order.orderId}</td>
+                      <td>
+                        {new Date(order.createdAt)
+                          .toLocaleDateString("en-GB", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "numeric",
+                          })
+                          .replace(",", "")
+                          .replaceAll("/", ".")}
+                      </td>
+                      <td>
+                        {order.customer.firstName} {order.customer.lastName}
+                      </td>
+                      <td>{order.totalPrice}€</td>
+                      <td>
+                        <div className="d-flex justify-content-around">
+                          <Button
+                            variant="outline-success"
+                            onClick={() => handleShowDetails(order)}
+                          >
+                            Details
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            )}
+          </Container>
+
+          {/* MODAL ZA DETALJE */}
+          <Modal
+            show={showDetails}
+            onHide={handleCloseDetails}
+            backdrop="static"
+            keyboard={false}
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>Order Details</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              {orderDetails ? (
+                <>
+                  <p>
+                    <strong>Order ID:</strong> {orderDetails.orderId}
+                  </p>
+                  <p>
+                    <strong>Customer:</strong> {orderDetails.customer.firstName}{" "}
+                    {orderDetails.customer.lastName}
+                  </p>
+                  <p>
+                    <strong>Total Price:</strong> {orderDetails.totalPrice}€
+                  </p>
+                  <p>
+                    <strong>Created At:</strong>{" "}
+                    {new Date(orderDetails.createdAt).toLocaleString()}
+                  </p>
+                  <h5>Items:</h5>
+                  <Table striped bordered>
+                    <thead>
+                      <tr>
+                        <th>Game Name</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {orderDetails.items.map((item, index) => (
+                        <tr key={index}>
+                          <td>{item.gameName}</td>
+                          <td>{item.quantity}</td>
+                          <td>{item.price}€</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </Table>
+                </>
+              ) : (
+                <p>Loading...</p>
+              )}
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={handleCloseDetails}>
+                Close
+              </Button>
+            </Modal.Footer>
+          </Modal>
+        </Tab>
+        <Tab eventKey="users" title="Users">
+          <Container className="mt-5">
+            {loading ? (
+              <Spinner animation="border" variant="success" />
+            ) : (
+              <Table>
+                <thead>
+                  <tr>
+                    <th>User name</th>
+                    <th>User email</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {users.map((user) => {
+                    return (
+                      <tr key={user._id}>
+                        <td>
+                          {user.firstName} {user.lastName}
+                        </td>
+                        <td>{user.email}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </Table>
+            )}
+          </Container>
+        </Tab>
       </Tabs>
       <Modal
         show={show}

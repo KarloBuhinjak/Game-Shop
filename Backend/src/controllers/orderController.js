@@ -30,13 +30,30 @@ createOrder = async (req, res, next) => {
   }
 };
 
-getAllOrders = async (req, res, next) => {
+const getAllOrders = async (req, res, next) => {
   try {
     const orders = await Order.find()
-      .populate("items.gameId", "gameName price")
+      .populate("customerId", "firstName lastName") // Dohvati firstName i lastName kupca
+      .populate("items.gameId", "gameName price") // Dohvati gameName i price iz Game modela
       .exec();
 
-    res.status(200).json(orders);
+    // Formatiraj izlaz da bude čitljiv i sadrži samo potrebne podatke
+    const formattedOrders = orders.map((order) => ({
+      orderId: order._id,
+      customer: {
+        firstName: order.customerId.firstName,
+        lastName: order.customerId.lastName,
+      },
+      items: order.items.map((item) => ({
+        gameName: item.gameId.gameName,
+        quantity: item.quantity,
+        price: item.gameId.price,
+      })),
+      totalPrice: order.totalPrice,
+      createdAt: order.createdAt,
+    }));
+
+    res.status(200).json(formattedOrders);
   } catch (err) {
     next(err);
   }
