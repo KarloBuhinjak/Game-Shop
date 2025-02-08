@@ -159,7 +159,7 @@ const GameDetails = () => {
               </Col>
             </Row>
           </Col>
-          {!claims?.isAdmin && (
+          {!claims?.isAdmin && game.stock > 0 ? (
             <Row className="my-5">
               <Button
                 onClick={() => {
@@ -170,6 +170,14 @@ const GameDetails = () => {
                 <h5>Add to cart</h5>
               </Button>
             </Row>
+          ) : (
+            !claims?.isAdmin && (
+              <Row className="my-5">
+                <Button disabled>
+                  <h5>Out of stock</h5>
+                </Button>
+              </Row>
+            )
           )}
         </Row>
       )}

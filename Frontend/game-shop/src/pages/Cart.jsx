@@ -6,11 +6,13 @@ import Row from "react-bootstrap/Row";
 import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
   const { cart, updateCart } = useContext(AuthenticationContext);
   const { token } = useContext(AuthenticationContext);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleOnClearCart = async () => {
     setLoading(true);
@@ -149,7 +151,11 @@ const Cart = () => {
               </h3>
               <hr className="mt-3" />
               <Row className="my-3">
-                <Button>
+                <Button
+                  onClick={() => {
+                    navigate("/payment");
+                  }}
+                >
                   <h5>Checkout</h5>
                 </Button>
               </Row>
