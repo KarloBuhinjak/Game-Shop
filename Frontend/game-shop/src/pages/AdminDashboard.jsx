@@ -124,12 +124,16 @@ const AdminDashboard = () => {
     };
 
     await axios
-      .put("http://localhost:3000/api/v1/games/" + updatingGameId, requestBody, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      })
+      .put(
+        "http://localhost:3000/api/v1/games/" + updatingGameId,
+        requestBody,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
       .then((response) => {
         setSelectedKey("games");
         setError(null);
@@ -186,7 +190,22 @@ const AdminDashboard = () => {
         });
     };
 
+    const fetchOrders = async () => {
+      await axios
+        .get("http://localhost:3000/api/v1/orders", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then(async (response) => {
+          console.log(response.data);
+        })
+        .catch((error) => {})
+        .finally(() => {});
+    };
+
     fetchGames();
+    fetchOrders();
   }, []);
 
   return (
@@ -340,7 +359,12 @@ const AdminDashboard = () => {
         <Tab eventKey="orders" title="Orders"></Tab>
         <Tab eventKey="users" title="Users"></Tab>
       </Tabs>
-      <Modal show={show} onHide={handleClose} backdrop="static" keyboard={false}>
+      <Modal
+        show={show}
+        onHide={handleClose}
+        backdrop="static"
+        keyboard={false}
+      >
         <Modal.Header closeButton>
           <Modal.Title>Update selected game</Modal.Title>
         </Modal.Header>

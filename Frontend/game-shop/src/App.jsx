@@ -9,6 +9,7 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 import AdminDashboard from "./pages/AdminDashboard";
 import GameDetails from "./pages/GameDetails";
 import Cart from "./pages/Cart";
+import Payment from "./pages/Payment";
 
 function App() {
   return (
@@ -59,6 +60,15 @@ function App() {
                 </Layout>
               }
             />
+            <Route
+              path="/payment"
+              exact
+              element={
+                <Layout>
+                  <Payment />
+                </Layout>
+              }
+            ></Route>
           </Route>
 
           <Route element={<ProtectedRoute adminOnly={true} />}>
