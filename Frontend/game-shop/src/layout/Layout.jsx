@@ -122,7 +122,9 @@ const Layout = ({ children }) => {
         </Container>
       </Navbar>
 
-      <div className="mb-5">{children}</div>
+      <div className="mb-5" style={{ minHeight: "100vh" }}>
+        {children}
+      </div>
 
       <div className="bg-dark text-white">
         <div className="container py-5">
