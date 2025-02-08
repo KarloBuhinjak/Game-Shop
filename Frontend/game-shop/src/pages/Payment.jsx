@@ -8,6 +8,7 @@ import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
 import { AuthenticationContext } from "../context/AuthenticationProvider";
+import { ToastContainer, toast } from "react-toastify";
 
 const Payment = () => {
   const [error, setError] = useState("");
@@ -79,6 +80,16 @@ const Payment = () => {
               number: "",
               date: "",
               ccv: "",
+            });
+            toast.success("Order create successfully.", {
+              position: "top-center",
+              autoClose: 2000,
+              hideProgressBar: false,
+              closeOnClick: false,
+              pauseOnHover: false,
+              draggable: false,
+              progress: undefined,
+              theme: "light",
             });
             navigate("/");
           })

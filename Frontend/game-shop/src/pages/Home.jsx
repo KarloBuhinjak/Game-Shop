@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Carousel from "react-bootstrap/Carousel";
+import { ToastContainer, toast } from "react-toastify";
 
 const Home = () => {
   const [games, setGames] = useState([]);
