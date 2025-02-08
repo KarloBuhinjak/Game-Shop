@@ -53,7 +53,9 @@ const Register = () => {
               <Form.Group className="mb-3" controlId="formBasicEmail">
                 <Form.Label>Email address</Form.Label>
                 <Form.Control type="email" placeholder="Enter email" />
-                <Form.Text className="text-muted">We'll never share your email with anyone else.</Form.Text>
+                <Form.Text className="text-muted">
+                  We'll never share your email with anyone else.
+                </Form.Text>
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="formBasicPassword">
@@ -66,9 +68,13 @@ const Register = () => {
             <p>
               Already have an account?{" "}
               <span
-                style={{ cursor: "pointer", color: "blue", textDecoration: "underline" }}
+                style={{
+                  cursor: "pointer",
+                  color: "blue",
+                  textDecoration: "underline",
+                }}
                 onClick={() => {
-                  navigate("/register");
+                  navigate("/login");
                 }}
               >
                 Click here
