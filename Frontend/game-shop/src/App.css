@@ -26,3 +26,10 @@
   min-height: 75vh !important;
   max-height: 75vh !important;
 }
+
+.carousel-image {
+  min-width: 100% !important;
+  max-width: 100% !important;
+  min-height: 75vh !important;
+  max-height: 75vh !important;
+}
