@@ -62,10 +62,7 @@ const Layout = ({ children }) => {
               )}
               {!claims.isAdmin && (
                 <>
-                  <Nav.Link
-                    eventKey={3}
-                    style={{ position: "relative", marginRight: "15px" }}
-                  >
+                  <Nav.Link eventKey={3} style={{ position: "relative" }}>
                     <Link
                       to={"/cart"}
                       style={{ textDecoration: "none", position: "relative" }}
@@ -74,13 +71,12 @@ const Layout = ({ children }) => {
                         size={25}
                         style={{ marginRight: "5px" }}
                       />
-                      Cart
                       <Badge
                         bg="success"
                         style={{
                           position: "absolute",
                           top: "-10px",
-                          right: "-25px",
+                          right: "-10px",
                         }}
                         pill
                       >
