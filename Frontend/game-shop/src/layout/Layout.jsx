@@ -7,6 +7,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { AuthenticationContext } from "../context/AuthenticationProvider";
 import Badge from "react-bootstrap/Badge";
 import { ToastContainer, toast } from "react-toastify";
+import { FaUserCircle } from "react-icons/fa";
+import { FaShoppingCart } from "react-icons/fa";
+import { FaSignOutAlt } from "react-icons/fa";
 
 const Layout = ({ children }) => {
   const navigate = useNavigate();
@@ -58,33 +61,45 @@ const Layout = ({ children }) => {
                 </Nav.Link>
               )}
               {!claims.isAdmin && (
-                <Nav.Link
-                  eventKey={3}
-                  style={{ position: "relative", marginRight: "15px" }}
-                >
-                  <Link
-                    to={"/cart"}
-                    style={{ textDecoration: "none", position: "relative" }}
+                <>
+                  <Nav.Link
+                    eventKey={3}
+                    style={{ position: "relative", marginRight: "15px" }}
                   >
-                    Cart
-                    <Badge
-                      bg="success"
-                      style={{
-                        position: "absolute",
-                        top: "-10px",
-                        right: "-25px",
-                      }}
-                      pill
+                    <Link
+                      to={"/cart"}
+                      style={{ textDecoration: "none", position: "relative" }}
                     >
-                      {cart.items && cart.items.length > 0
-                        ? cart.items.reduce(
-                            (acc, item) => acc + item.quantity,
-                            0
-                          )
-                        : undefined}
-                    </Badge>
-                  </Link>
-                </Nav.Link>
+                      <FaShoppingCart
+                        size={25}
+                        style={{ marginRight: "5px" }}
+                      />
+                      Cart
+                      <Badge
+                        bg="success"
+                        style={{
+                          position: "absolute",
+                          top: "-10px",
+                          right: "-25px",
+                        }}
+                        pill
+                      >
+                        {cart.items?.length > 0
+                          ? cart.items.reduce(
+                              (acc, item) => acc + item.quantity,
+                              0
+                            )
+                          : undefined}
+                      </Badge>
+                    </Link>
+                  </Nav.Link>
+
+                  <Nav.Link eventKey={4}>
+                    <Link to={"/profile"} style={{ textDecoration: "none" }}>
+                      <FaUserCircle size={25} style={{ marginRight: "5px" }} />
+                    </Link>
+                  </Nav.Link>
+                </>
               )}
               <Nav.Link eventKey={2}>
                 <Link
@@ -92,7 +107,7 @@ const Layout = ({ children }) => {
                   style={{ textDecoration: "none" }}
                   onClick={handleLogout}
                 >
-                  Logout
+                  <FaSignOutAlt size={25} style={{ marginRight: "5px" }} />
                 </Link>
               </Nav.Link>
             </Nav>
