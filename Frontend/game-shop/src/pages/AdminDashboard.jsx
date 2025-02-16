@@ -119,7 +119,7 @@ const AdminDashboard = () => {
           fileInputRef.current.value = "";
         }
 
-        setGames(response.data.games);
+        setGames(response.data.games.filter((game) => game.isActive));
       })
       .catch((errors) => {
         setError(errors.response.data.error);
@@ -166,7 +166,7 @@ const AdminDashboard = () => {
           fileInputRef.current.value = "";
         }
 
-        setGames(response.data.games);
+        setGames(response.data.games.filter((game) => game.isActive));
 
         handleClose();
       })
@@ -180,7 +180,7 @@ const AdminDashboard = () => {
     await axios
       .delete("http://localhost:3000/api/v1/games/" + id)
       .then((response) => {
-        setGames(response.data.games);
+        setGames(response.data.games.filter((game) => game.isActive));
       })
       .catch((errors) => {
         console.log(errors);
@@ -195,7 +195,7 @@ const AdminDashboard = () => {
       await axios
         .get("http://localhost:3000/api/v1/games")
         .then((response) => {
-          setGames(response.data);
+          setGames(response.data.filter((game) => game.isActive));
         })
         .catch((error) => {
           console.log(error);
