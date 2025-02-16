@@ -33,11 +33,11 @@ createOrder = async (req, res, next) => {
 const getAllOrders = async (req, res, next) => {
   try {
     const orders = await Order.find()
-      .populate("customerId", "firstName lastName") // Dohvati firstName i lastName kupca
-      .populate("items.gameId", "gameName price") // Dohvati gameName i price iz Game modela
+      //   .populate("game")
+      .populate("customerId", "firstName lastName")
+      .populate("items.gameId", "gameName price")
       .exec();
 
-    // Formatiraj izlaz da bude čitljiv i sadrži samo potrebne podatke
     const formattedOrders = orders.map((order) => ({
       orderId: order._id,
       customer: {
