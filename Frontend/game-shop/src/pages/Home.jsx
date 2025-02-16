@@ -47,20 +47,23 @@ const Home = () => {
         <>
           <Row>
             <Carousel fade>
-              {games.slice(0, 3).map((game) => {
-                return (
-                  <Carousel.Item>
-                    <img
-                      src={`http://localhost:3000/images/${game.image}`}
-                      className="carousel-image"
-                    ></img>
-                    <Carousel.Caption>
-                      <h3>{game.gameName}</h3>
-                      <p>Best game of the month!</p>
-                    </Carousel.Caption>
-                  </Carousel.Item>
-                );
-              })}
+              {games
+                .filter((game) => game.isActive)
+                .slice(0, 3)
+                .map((game) => {
+                  return (
+                    <Carousel.Item>
+                      <img
+                        src={`http://localhost:3000/images/${game.image}`}
+                        className="carousel-image"
+                      ></img>
+                      <Carousel.Caption>
+                        <h3>{game.gameName}</h3>
+                        <p>Best game of the month!</p>
+                      </Carousel.Caption>
+                    </Carousel.Item>
+                  );
+                })}
             </Carousel>
           </Row>
           <Row className="my-3">
@@ -88,7 +91,37 @@ const Home = () => {
               filteredGames.length === 0 ? (
                 <Col>No games found.</Col>
               ) : (
-                filteredGames.map((game) => {
+                filteredGames
+                  .filter((game) => game.isActive)
+                  .map((game) => {
+                    return (
+                      <Col key={game._id} className="my-2">
+                        <Card
+                          style={{}}
+                          onClick={() => {
+                            navigate(`/details`, { state: { id: game._id } });
+                          }}
+                        >
+                          <Card.Img
+                            variant="top"
+                            src={`http://localhost:3000/images/${game.image}`}
+                            style={{}}
+                          />
+                          <Card.Body>
+                            <div className="d-flex flex-column justify-content-between">
+                              <Card.Title>{game.gameName}</Card.Title>
+                              <Card.Text>{game.price}€</Card.Text>
+                            </div>
+                          </Card.Body>
+                        </Card>
+                      </Col>
+                    );
+                  })
+              )
+            ) : (
+              games
+                .filter((game) => game.isActive)
+                .map((game) => {
                   return (
                     <Col key={game._id} className="my-2">
                       <Card
@@ -100,10 +133,9 @@ const Home = () => {
                         <Card.Img
                           variant="top"
                           src={`http://localhost:3000/images/${game.image}`}
-                          style={{}}
                         />
                         <Card.Body>
-                          <div className="d-flex flex-column justify-content-between">
+                          <div className="d-flex justify-content-between">
                             <Card.Title>{game.gameName}</Card.Title>
                             <Card.Text>{game.price}€</Card.Text>
                           </div>
@@ -112,31 +144,6 @@ const Home = () => {
                     </Col>
                   );
                 })
-              )
-            ) : (
-              games.map((game) => {
-                return (
-                  <Col key={game._id} className="my-2">
-                    <Card
-                      style={{}}
-                      onClick={() => {
-                        navigate(`/details`, { state: { id: game._id } });
-                      }}
-                    >
-                      <Card.Img
-                        variant="top"
-                        src={`http://localhost:3000/images/${game.image}`}
-                      />
-                      <Card.Body>
-                        <div className="d-flex justify-content-between">
-                          <Card.Title>{game.gameName}</Card.Title>
-                          <Card.Text>{game.price}€</Card.Text>
-                        </div>
-                      </Card.Body>
-                    </Card>
-                  </Col>
-                );
-              })
             )}
           </Row>
         </>
